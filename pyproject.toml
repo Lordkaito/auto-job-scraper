@@ -1,0 +1,58 @@
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name        = "workable-job-scraper"
+version     = "1.0.0"
+description = "Scrapes Workable for remote jobs and scores them against your profile"
+requires-python = ">=3.11"
+readme      = "README.md"
+license     = {text = "MIT"}
+
+# Your name and public email address
+authors = [
+    {name = "Isai Gustavo Cespedes Sanchez", email = "cespedesisai88@gmail.com"},
+]
+
+# Words users might search for on PyPI
+keywords = [
+    "jobs",
+    "job-search",
+    "scraping",
+    "workable",
+    "remote-jobs",
+    "career",
+]
+
+# PyPI classifiers — see https://pypi.org/classifiers/ for the full list
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "playwright>=1.40",
+    "openpyxl>=3.1",
+    "pypdf>=4.0",
+]
+
+[project.urls]
+# Public URLs shown on the PyPI listing page — fill in once the repo is live
+Repository    = ""   # e.g. https://github.com/you/workable-job-scraper
+Issues        = ""   # e.g. https://github.com/you/workable-job-scraper/issues
+Changelog     = ""   # e.g. https://github.com/you/workable-job-scraper/blob/main/CHANGELOG.md
+
+[project.scripts]
+workable-scraper = "workable_scraper.cli:main_cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/workable_scraper"]
