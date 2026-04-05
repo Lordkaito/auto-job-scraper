@@ -10,11 +10,11 @@ import re
 
 from playwright.async_api import Page
 
-from workable_scraper import display
-from workable_scraper.config import BASE_URL
-from workable_scraper.models import Job
-from workable_scraper.profile import UserProfile
-from workable_scraper.scoring import (
+from auto_job_scraper import display
+from auto_job_scraper.config import BASE_URL
+from auto_job_scraper.models import Job
+from auto_job_scraper.profile import UserProfile
+from auto_job_scraper.scoring import (
     parse_salary,
     score_company,
     score_experience,

@@ -3,9 +3,9 @@ requires      = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name        = "workable-job-scraper"
+name        = "auto-job-scraper"
 version     = "1.0.0"
-description = "Scrapes Workable for remote jobs and scores them against your profile"
+description = "Scrapes job boards and scores listings against your profile — skills, experience, and salary"
 requires-python = ">=3.11"
 readme      = "README.md"
 license     = {text = "MIT"}
@@ -23,6 +23,8 @@ keywords = [
     "workable",
     "remote-jobs",
     "career",
+    "job-scraper",
+    "automation",
 ]
 
 # PyPI classifiers — see https://pypi.org/classifiers/ for the full list
@@ -52,7 +54,7 @@ Issues        = "https://github.com/Lordkaito/auto-job-scraper/issues"
 Changelog     = "https://github.com/Lordkaito/auto-job-scraper/blob/main/CHANGELOG.md"
 
 [project.scripts]
-workable-scraper = "workable_scraper.cli:main_cli"
+auto-job-scraper = "auto_job_scraper.cli:main_cli"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/workable_scraper"]
+packages = ["src/auto_job_scraper"]

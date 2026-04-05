@@ -1,6 +1,8 @@
-# workable-job-scraper
+# auto-job-scraper
 
-A CLI tool that scrapes [Workable](https://jobs.workable.com) for job listings and scores them against your personal profile — skills, experience, and salary expectations — so the best matches rise to the top.
+A CLI tool that scrapes job boards and scores listings against your personal profile — skills, experience, and salary expectations — so the best matches rise to the top.
+
+Currently supports [Workable](https://jobs.workable.com). More job boards coming in future releases.
 
 Results are exported to a formatted Excel file with colour-coded scores and clickable job links.
 
@@ -28,7 +30,7 @@ Results are exported to a formatted Excel file with colour-coded scores and clic
 ## Installation
 
 ```bash
-pip install workable-job-scraper
+pip install auto-job-scraper
 ```
 
 ### Installing the browser (one-time step)
@@ -52,7 +54,7 @@ Before scraping, the tool needs to know your profile (skills, experience, salary
 ### Option 1 — Import from your CV (recommended)
 
 ```bash
-workable-scraper --cv path/to/your-cv.pdf
+auto-job-scraper --cv path/to/your-cv.pdf
 ```
 
 The tool will extract your name, years of experience, and tech skills from the file, show you what it found, and save a profile config. If anything couldn't be detected, it will ask you a few questions or let you edit the file yourself.
@@ -62,7 +64,7 @@ Supported formats: `.pdf`, `.txt`, `.md`
 ### Option 2 — Generate a template and fill it in
 
 ```bash
-workable-scraper --init
+auto-job-scraper --init
 ```
 
 Creates a pre-filled `profile.toml` with sample data and opens the folder so you can edit it directly. Fill in your details, then run the scraper.
@@ -70,7 +72,7 @@ Creates a pre-filled `profile.toml` with sample data and opens the folder so you
 ### Option 3 — Answer questions interactively
 
 ```bash
-workable-scraper
+auto-job-scraper
 ```
 
 If no profile is found, the tool offers to walk you through a short setup wizard.
@@ -82,12 +84,12 @@ If no profile is found, the tool offers to walk you through a short setup wizard
 Once your profile is set up:
 
 ```bash
-workable-scraper
+auto-job-scraper
 ```
 
 The tool will:
 1. Load your profile
-2. Search Workable for each keyword in your config
+2. Search for each keyword in your config
 3. Score every listing it finds
 4. Export the results to an Excel file in your current directory
 5. Print the top 5 matches in the terminal with clickable links
@@ -100,13 +102,13 @@ Your profile is stored at:
 
 | Platform | Location |
 |----------|----------|
-| macOS / Linux | `~/.workable-scraper/profile.toml` |
-| Windows | `C:\Users\<you>\.workable-scraper\profile.toml` |
+| macOS / Linux | `~/.auto-job-scraper/profile.toml` |
+| Windows | `C:\Users\<you>\.auto-job-scraper\profile.toml` |
 
 You can open the file directly from the terminal:
 
 ```bash
-workable-scraper --profile-path
+auto-job-scraper --profile-path
 ```
 
 The config file looks like this:
@@ -153,7 +155,7 @@ experience_gap    = 0.5
 
 ## Scoring system
 
-Each job is scored on up to five dimensions, then combined into a final weighted score (0-10):
+Each job is scored on up to five dimensions, then combined into a final weighted score (0–10):
 
 | Dimension | Weight | How it works |
 |-----------|--------|--------------|
@@ -172,11 +174,11 @@ Jobs below `min_score` (default 5.0) are discarded. If `strict_experience` is en
 ## CLI reference
 
 ```
-workable-scraper                    Run the scraper using your saved profile
-workable-scraper --cv FILE          Parse a CV and create/update your profile, then exit
-workable-scraper --init             Create a template profile.toml and exit
-workable-scraper --profile-path     Show the location of your profile config file
-workable-scraper --remove-profile   Delete your profile config file
+auto-job-scraper                    Run the scraper using your saved profile
+auto-job-scraper --cv FILE          Parse a CV and create/update your profile, then exit
+auto-job-scraper --init             Create a template profile.toml and exit
+auto-job-scraper --profile-path     Show the location of your profile config file
+auto-job-scraper --remove-profile   Delete your profile config file
 ```
 
 ---
@@ -186,7 +188,7 @@ workable-scraper --remove-profile   Delete your profile config file
 To update your profile after getting a new CV:
 
 ```bash
-workable-scraper --cv path/to/updated-cv.pdf
+auto-job-scraper --cv path/to/updated-cv.pdf
 ```
 
 This merges the new CV data into your existing profile, preserving your search keywords and filter settings.
@@ -194,7 +196,7 @@ This merges the new CV data into your existing profile, preserving your search k
 To edit the file directly at any time:
 
 ```bash
-workable-scraper --profile-path   # shows the file location (clickable)
+auto-job-scraper --profile-path   # shows the file location (clickable)
 ```
 
 ---

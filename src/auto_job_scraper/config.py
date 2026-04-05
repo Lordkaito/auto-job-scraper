@@ -2,7 +2,7 @@
 config.py
 ---------
 Algorithmic constants — not user-specific.
-Everything a user would customise lives in ~/.workable-scraper/profile.toml.
+Everything a user would customise lives in ~/.auto-job-scraper/profile.toml.
 """
 
 BASE_URL: str = "https://jobs.workable.com"

@@ -7,7 +7,7 @@ Data model for a scraped job listing.
 from dataclasses import dataclass
 from typing import Optional
 
-from workable_scraper.config import WEIGHTS
+from auto_job_scraper.config import WEIGHTS
 
 
 @dataclass

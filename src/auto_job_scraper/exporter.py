@@ -12,9 +12,9 @@ import openpyxl
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-from workable_scraper.config import WEIGHTS
-from workable_scraper.models import Job
-from workable_scraper.profile import UserProfile
+from auto_job_scraper.config import WEIGHTS
+from auto_job_scraper.models import Job
+from auto_job_scraper.profile import UserProfile
 
 # ── Style constants ─────────────────────────────────────────────���─────────────
 
@@ -186,7 +186,7 @@ def _write_info_sheet(
         )
 
     rows = [
-        ("Workable Job Scraper — Run Info", True),
+        ("Auto Job Scraper — Run Info", True),
         (f"Generated:               {datetime.now().strftime('%Y-%m-%d %H:%M')}", False),
         (f"User:                    {profile.name}", False),
         (f"Total jobs accepted:     {len(jobs)}", False),

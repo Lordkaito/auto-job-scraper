@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-PROFILE_DIR  = Path.home() / ".workable-scraper"
+PROFILE_DIR  = Path.home() / ".auto-job-scraper"
 PROFILE_FILE = PROFILE_DIR / "profile.toml"
 
 # ── Default skill set (used for the --init template) ─────────────────────────
@@ -130,13 +130,13 @@ def _render_toml(p: UserProfile) -> str:
     remote_only_str = "true" if p.remote_only else "false"
 
     return f"""\
-# Workable Job Scraper — User Profile
+# Auto Job Scraper — User Profile
 # ─────────────────────────────────────────────────────────────────
 # Edit this file with your own information, then run:
-#   workable-scraper
+#   auto-job-scraper
 #
 # To regenerate this file from a CV:
-#   workable-scraper --cv path/to/your-cv.pdf
+#   auto-job-scraper --cv path/to/your-cv.pdf
 # ─────────────────────────────────────────────────────────────────
 
 [profile]

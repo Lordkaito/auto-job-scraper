@@ -5,8 +5,8 @@ Interactive Q&A flow for first-time setup when no CV or profile is provided.
 Asks only the questions needed to build a complete UserProfile.
 """
 
-from workable_scraper.config import ALL_KNOWN_SKILLS
-from workable_scraper.profile import UserProfile
+from auto_job_scraper.config import ALL_KNOWN_SKILLS
+from auto_job_scraper.profile import UserProfile
 
 
 def run_wizard(prefilled: dict | None = None) -> UserProfile:

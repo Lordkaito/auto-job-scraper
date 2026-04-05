@@ -3,9 +3,9 @@ cli.py
 ------
 Entry point. Handles argument parsing, profile loading, and the startup flow:
 
-  workable-scraper --init       → write template profile.toml, exit
-  workable-scraper --cv FILE    → parse CV, create/update profile.toml, run
-  workable-scraper              → load existing profile.toml, run
+  auto-job-scraper --init       → write template profile.toml, exit
+  auto-job-scraper --cv FILE    → parse CV, create/update profile.toml, run
+  auto-job-scraper              → load existing profile.toml, run
                                    (if no profile: offer wizard or stop)
 """
 
@@ -16,11 +16,11 @@ from datetime import datetime
 
 from playwright.async_api import async_playwright
 
-from workable_scraper import display
-from workable_scraper.cv_parser import parse_cv
-from workable_scraper.exporter import export_to_excel
-from workable_scraper.models import Job
-from workable_scraper.profile import (
+from auto_job_scraper import display
+from auto_job_scraper.cv_parser import parse_cv
+from auto_job_scraper.exporter import export_to_excel
+from auto_job_scraper.models import Job
+from auto_job_scraper.profile import (
     PROFILE_FILE,
     UserProfile,
     default_profile,
@@ -28,15 +28,15 @@ from workable_scraper.profile import (
     merge_cv_into_profile,
     save_profile,
 )
-from workable_scraper.scraper import search_keyword
-from workable_scraper.wizard import run_wizard
+from auto_job_scraper.scraper import search_keyword
+from auto_job_scraper.wizard import run_wizard
 
 
 # ── Argument parser ───────────────────────────────────────────────────────────
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="workable-scraper",
+        prog="auto-job-scraper",
         description="Scrape Workable for remote jobs and score them against your profile.",
     )
     parser.add_argument(
@@ -102,7 +102,7 @@ def _resolve_profile(args: argparse.Namespace) -> UserProfile:
         print(f"  Folder : {display.file_link(str(PROFILE_FILE.parent), PROFILE_FILE.parent)}")
         print()
         print("  Edit the file with your own information, then run:")
-        print("    workable-scraper\n")
+        print("    auto-job-scraper\n")
         sys.exit(0)
 
     # ── --cv: parse CV, create/update profile, then exit ─────────────────────
@@ -137,8 +137,8 @@ def _resolve_profile(args: argparse.Namespace) -> UserProfile:
     print("\n  ⚠  No profile found.")
     print(f"     Expected location: {PROFILE_FILE}\n")
     print("  You have three options:")
-    print("    1.  workable-scraper --cv path/to/your-cv.pdf  (recommended)")
-    print("    2.  workable-scraper --init  (creates an editable template)")
+    print("    1.  auto-job-scraper --cv path/to/your-cv.pdf  (recommended)")
+    print("    2.  auto-job-scraper --init  (creates an editable template)")
     print("    3.  Answer a few questions now to build a profile\n")
 
     choice = input("  Continue with option 3 (interactive setup)? (y/n) [n]: ").strip().lower()
@@ -240,7 +240,7 @@ def _print_profile_saved() -> None:
     print(f"  Folder : {display.file_link(str(PROFILE_FILE.parent), PROFILE_FILE.parent)}")
     print()
     print("  When you're ready to start scraping, run:")
-    print("    workable-scraper\n")
+    print("    auto-job-scraper\n")
 
 
 # ── Scraper runner ────────────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ async def _run(profile: UserProfile) -> None:
 
     print()
     print("╔" + "═" * 63 + "╗")
-    print("║               🚀  Workable Job Scraper                    ║")
+    print("║               🚀  Auto Job Scraper                    ║")
     print("╠" + "═" * 63 + "╣")
     print(f"║  User         : {profile.name:<46}║")
     print(f"║  Started      : {started_at.strftime('%Y-%m-%d %H:%M:%S'):<46}║")

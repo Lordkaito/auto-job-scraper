@@ -12,14 +12,14 @@ not just the one hardcoded during development.
 import re
 from typing import Optional
 
-from workable_scraper.config import (
+from auto_job_scraper.config import (
     ALL_KNOWN_SKILLS,
     KNOWN_COMPANIES,
     LEVEL_KEYWORD_YEARS,
     SOFT_EXPERIENCE_PHRASES,
 )
-from workable_scraper.models import Job
-from workable_scraper.profile import UserProfile
+from auto_job_scraper.models import Job
+from auto_job_scraper.profile import UserProfile
 
 
 # ── Salary parser ─────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from workable_scraper.config import ALL_KNOWN_SKILLS
+from auto_job_scraper.config import ALL_KNOWN_SKILLS
 
 _CURRENT_YEAR = datetime.now().year
 
