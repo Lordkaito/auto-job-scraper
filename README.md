@@ -153,7 +153,7 @@ experience_gap    = 0.5
 
 ## Scoring system
 
-Each job is scored on up to five dimensions, then combined into a final weighted score (0–10):
+Each job is scored on up to five dimensions, then combined into a final weighted score (0-10):
 
 | Dimension | Weight | How it works |
 |-----------|--------|--------------|
