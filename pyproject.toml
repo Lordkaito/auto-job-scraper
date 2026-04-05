@@ -47,9 +47,9 @@ dependencies = [
 
 [project.urls]
 # Public URLs shown on the PyPI listing page — fill in once the repo is live
-Repository    = ""   # e.g. https://github.com/you/workable-job-scraper
-Issues        = ""   # e.g. https://github.com/you/workable-job-scraper/issues
-Changelog     = ""   # e.g. https://github.com/you/workable-job-scraper/blob/main/CHANGELOG.md
+Repository    = "https://github.com/Lordkaito/auto-job-scraper"
+Issues        = "https://github.com/Lordkaito/auto-job-scraper/issues"
+Changelog     = "https://github.com/Lordkaito/auto-job-scraper/blob/main/CHANGELOG.md"
 
 [project.scripts]
 workable-scraper = "workable_scraper.cli:main_cli"
