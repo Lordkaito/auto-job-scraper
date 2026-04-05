@@ -195,7 +195,7 @@ To edit the file directly at any time:
 
 ```bash
 workable-scraper --profile-path   # shows the file location (clickable)
-``` 
+```
 
 ---
 
