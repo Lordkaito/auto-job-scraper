@@ -4,7 +4,7 @@ models.py
 Data model for a scraped job listing.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from auto_job_scraper.config import WEIGHTS
@@ -22,6 +22,7 @@ class Job:
     remote_info: str = ""
     description_snippet: str = ""
     keyword: str = ""
+    date_posted: str = ""
 
     # Component scores (each 1–10)
     score_profile: float = 5.0
@@ -33,6 +34,9 @@ class Job:
 
     # Detected experience requirement from the job post (years)
     experience_required: Optional[float] = None
+
+    # Skills found in the job post that are absent from the user's profile
+    missing_skills: list[str] = field(default_factory=list)
 
     def compute_final_score(self, remote_only: bool = True) -> float:
         if remote_only:

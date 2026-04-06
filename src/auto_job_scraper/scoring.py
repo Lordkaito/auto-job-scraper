@@ -84,6 +84,11 @@ def extract_experience_requirement(text: str) -> Optional[float]:
         candidates.append(float(m.group(1)))
 
     for m in re.finditer(
+        r'\b(\d+)\+?\s*(?:years?|yrs?)\s+of\s+\w', text, re.I
+    ):
+        candidates.append(float(m.group(1)))
+
+    for m in re.finditer(
         r'(?:minimum|at\s+least|min\.?)\s*(\d+)\s*(?:years?|yrs?)', text, re.I
     ):
         candidates.append(float(m.group(1)))
@@ -107,14 +112,18 @@ def score_profile(job: Job, profile: UserProfile) -> float:
       score = (profile skills ∩ job skills) / |job skills| × 10
 
     Returns 5.0 (neutral) when no recognisable skills are found in the job.
+    Also sets job.missing_skills to the sorted list of skills detected in the
+    job post that are absent from the user's profile.
     """
     text = (job.title + " " + job.description_snippet).lower()
     job_skills = {skill for skill in ALL_KNOWN_SKILLS if skill in text}
 
     if not job_skills:
+        job.missing_skills = []
         return 5.0
 
     matched = job_skills & set(profile.skills)
+    job.missing_skills = sorted(job_skills - matched)
     return round(len(matched) / len(job_skills) * 10, 1)
 
 
@@ -200,7 +209,7 @@ def score_remote(job: Job) -> float:
     combined = (job.remote_info + " " + job.description_snippet).lower()
 
     if any(w in combined for w in [
-        "work from anywhere", "worldwide", "global remote",
+        "work from anywhere", "remote - worldwide", "global remote",
         "anywhere in the world", "fully distributed",
     ]):
         return 10.0
@@ -212,13 +221,6 @@ def score_remote(job: Job) -> float:
         "we cover relocation", "relocation support",
     ]):
         return 8.0
-
-    if is_remote and any(w in combined for w in [
-        "us only", "united states only", "eu only", "europe only",
-        "must be based", "must reside", "authorized to work in the us",
-        "work authorization", "eligible to work in",
-    ]):
-        return 6.0
 
     if is_remote:
         return 6.0

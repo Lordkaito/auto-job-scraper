@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name        = "auto-job-scraper"
-version     = "1.0.0"
+version     = "1.1.0"
 description = "Scrapes job boards and scores listings against your profile — skills, experience, and salary"
 requires-python = ">=3.11"
 readme      = "README.md"

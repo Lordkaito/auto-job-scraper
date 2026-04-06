@@ -33,24 +33,27 @@ _YELLOW = (PatternFill("solid", fgColor="FFEB9C"), Font(bold=True, color="9C6500
 _RED    = (PatternFill("solid", fgColor="FFC7CE"), Font(bold=True, color="9C0006"))
 
 _COLUMNS = [
-    ("Keyword",           20),
-    ("Title",             35),
-    ("Company",           25),
-    ("Location",          20),
-    ("Salary",            25),
-    ("Exp. Required",     15),
-    ("Remote",            30),
-    ("Final Score",       12),
-    ("Profile (30%)",     16),
-    ("Salary (25%)",      16),
-    ("Experience (20%)",  16),
-    ("Remote (15%)",      16),
-    ("Company (10%)",     16),
-    ("Link",              55),
+    ("Keyword",           20),   # 1
+    ("Title",             35),   # 2
+    ("Company",           25),   # 3
+    ("Location",          20),   # 4
+    ("Salary",            25),   # 5
+    ("Exp. Required",     15),   # 6
+    ("Remote",            30),   # 7
+    ("Date Posted",       15),   # 8
+    ("Final Score",       12),   # 9
+    ("Profile (30%)",     16),   # 10
+    ("Salary (25%)",      16),   # 11
+    ("Experience (20%)",  16),   # 12
+    ("Remote (15%)",      16),   # 13
+    ("Company (10%)",     16),   # 14
+    ("Missing Skills",    40),   # 15
+    ("Link",              55),   # 16
 ]
 
-_SCORE_COLS = {8, 9, 10, 11, 12, 13}
-_LINK_COL   = 14
+_SCORE_COLS      = {9, 10, 11, 12, 13, 14}
+_FINAL_SCORE_COL = 9
+_LINK_COL        = 16
 
 
 # ── Public API ────────────────────────────���───────────────────────────────────
@@ -101,6 +104,8 @@ def _write_jobs_sheet(wb: openpyxl.Workbook, jobs: list[Job]) -> None:
             if job.experience_required is not None else "Not listed"
         )
 
+        missing_display = ", ".join(job.missing_skills) if job.missing_skills else "—"
+
         row_data = [
             job.keyword,
             job.title,
@@ -109,12 +114,14 @@ def _write_jobs_sheet(wb: openpyxl.Workbook, jobs: list[Job]) -> None:
             salary_display,
             exp_display,
             job.remote_info,
+            job.date_posted or "—",
             job.score_final,
             job.score_profile,
             job.score_salary,
             job.score_experience,
             job.score_remote,
             job.score_company,
+            missing_display,
             job.url,
         ]
 
@@ -125,7 +132,7 @@ def _write_jobs_sheet(wb: openpyxl.Workbook, jobs: list[Job]) -> None:
             if fill.fgColor.rgb != "00000000":
                 cell.fill = fill
 
-        score_cell = ws.cell(row=row_idx, column=8)
+        score_cell = ws.cell(row=row_idx, column=_FINAL_SCORE_COL)
         if job.score_final >= 8.0:
             score_cell.fill, score_cell.font = _GREEN
         elif job.score_final >= 6.5:
@@ -189,6 +196,7 @@ def _write_info_sheet(
         ("Auto Job Scraper — Run Info", True),
         (f"Generated:               {datetime.now().strftime('%Y-%m-%d %H:%M')}", False),
         (f"User:                    {profile.name}", False),
+        (f"Job board:               {profile.job_board}", False),
         (f"Total jobs accepted:     {len(jobs)}", False),
         ("", False),
         (f"Experience:              {profile.experience_years} yrs", False),

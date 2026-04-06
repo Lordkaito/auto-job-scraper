@@ -17,6 +17,7 @@ from datetime import datetime
 from playwright.async_api import async_playwright
 
 from auto_job_scraper import display
+from auto_job_scraper.boards import available_boards, get_board
 from auto_job_scraper.cv_parser import parse_cv
 from auto_job_scraper.exporter import export_to_excel
 from auto_job_scraper.models import Job
@@ -58,6 +59,26 @@ def _build_parser() -> argparse.ArgumentParser:
         "--remove-profile",
         action="store_true",
         help="Delete the profile config file and exit.",
+    )
+    parser.add_argument(
+        "--board",
+        choices=available_boards(),
+        default=None,
+        metavar="BOARD",
+        help=(
+            f"Job board to scrape. Available: {', '.join(available_boards())}. "
+            "Overrides the job_board setting in profile.toml."
+        ),
+    )
+    parser.add_argument(
+        "--headless",
+        choices=["true", "false"],
+        default="true",
+        metavar="true|false",
+        help=(
+            "Run the browser in headless mode (default: true). "
+            "Use --headless false to open a visible browser window."
+        ),
     )
     return parser
 
@@ -137,8 +158,8 @@ def _resolve_profile(args: argparse.Namespace) -> UserProfile:
     print("\n  ⚠  No profile found.")
     print(f"     Expected location: {PROFILE_FILE}\n")
     print("  You have three options:")
-    print("    1.  auto-job-scraper --cv path/to/your-cv.pdf  (recommended)")
-    print("    2.  auto-job-scraper --init  (creates an editable template)")
+    print("    1.  auto-job-scraper --cv path/to/your-cv.pdf")
+    print("    2.  auto-job-scraper --init  (creates an editable template) (recommended)")
     print("    3.  Answer a few questions now to build a profile\n")
 
     choice = input("  Continue with option 3 (interactive setup)? (y/n) [n]: ").strip().lower()
@@ -245,9 +266,10 @@ def _print_profile_saved() -> None:
 
 # ── Scraper runner ────────────────────────────────────────────────────────────
 
-async def _run(profile: UserProfile) -> None:
+async def _run(profile: UserProfile, board_name: str, headless: bool = True) -> None:
     started_at = datetime.now()
     kw_total   = len(profile.search_keywords)
+    board      = get_board(board_name)
 
     strict_label = (
         f"ON  (max {profile.experience_years + profile.experience_gap:.1f} yrs, "
@@ -260,6 +282,7 @@ async def _run(profile: UserProfile) -> None:
     print("║               🚀  Auto Job Scraper                    ║")
     print("╠" + "═" * 63 + "╣")
     print(f"║  User         : {profile.name:<46}║")
+    print(f"║  Board        : {board.name:<46}║")
     print(f"║  Started      : {started_at.strftime('%Y-%m-%d %H:%M:%S'):<46}║")
     print(f"║  Keywords     : {kw_total} search terms{'':<36}║")
     print(
@@ -279,10 +302,11 @@ async def _run(profile: UserProfile) -> None:
     all_jobs: list[Job] = []
 
     async with async_playwright() as p:
-        print("  🌐 Launching headless Chromium browser...")
+        mode_label = "headless" if headless else "windowed"
+        print(f"  🌐 Launching {mode_label} Chromium browser...")
         try:
             browser = await p.chromium.launch(
-                headless=True,
+                headless=headless,
                 args=["--no-sandbox", "--disable-dev-shm-usage"],
             )
         except Exception as e:
@@ -304,14 +328,17 @@ async def _run(profile: UserProfile) -> None:
         page = await context.new_page()
         print("  ✔  Browser ready\n")
 
+        await board.setup(page)
+
         for idx, keyword in enumerate(profile.search_keywords, 1):
             try:
-                jobs = await search_keyword(page, keyword, idx, kw_total, profile)
+                jobs = await search_keyword(page, keyword, idx, kw_total, profile, board)
                 all_jobs.extend(jobs)
             except Exception as e:
                 print(f"\n  ⚠  Error on keyword '{keyword}': {e}")
             await asyncio.sleep(2)
 
+        await board.teardown(page)
         await browser.close()
         print("\n  🛑 Browser closed")
 
@@ -327,7 +354,7 @@ async def _run(profile: UserProfile) -> None:
     print("╚" + "═" * 63 + "╝")
 
     if all_jobs:
-        output_file = f"workable_jobs_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        output_file = f"{board.name}_jobs_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
         print(f"\n  💾 Exporting to {output_file}...")
         export_to_excel(all_jobs, output_file, profile)
 
@@ -350,10 +377,13 @@ async def _run(profile: UserProfile) -> None:
 
 def main_cli() -> None:
     """Synchronous entry point registered by pyproject.toml."""
-    parser  = _build_parser()
-    args    = parser.parse_args()
-    profile = _resolve_profile(args)
-    asyncio.run(_run(profile))
+    parser     = _build_parser()
+    args       = parser.parse_args()
+    profile    = _resolve_profile(args)
+    # --board overrides profile.toml; profile.job_board is the persisted default.
+    board_name = args.board or profile.job_board
+    headless   = args.headless.lower() != "false"
+    asyncio.run(_run(profile, board_name, headless=headless))
 
 
 if __name__ == "__main__":

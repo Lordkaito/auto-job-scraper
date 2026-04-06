@@ -40,7 +40,9 @@ class UserProfile:
     skills:                list[str] = field(default_factory=list)
     salary_target_usd:     int       = 50_000
     remote_only:           bool      = True
+    job_board:             str       = "workable"
     search_keywords:       list[str] = field(default_factory=list)
+    date_posted_filter:    int       = 0
     strict_experience:     bool      = True
     experience_gap:        float     = 0.5
     max_jobs_per_keyword:  int       = 20
@@ -70,7 +72,9 @@ def load_profile() -> Optional[UserProfile]:
         skills                = list(sk.get("list", [])),
         salary_target_usd     = int(sal.get("target_usd", 50_000)),
         remote_only           = bool(fi.get("remote_only", True)),
+        job_board             = str(se.get("job_board", "workable")),
         search_keywords       = list(se.get("keywords", [])),
+        date_posted_filter    = int(se.get("date_posted_filter", 0)),
         strict_experience     = bool(fi.get("strict_experience", True)),
         experience_gap        = float(fi.get("experience_gap", 0.5)),
         max_jobs_per_keyword  = int(se.get("max_jobs_per_keyword", 20)),
@@ -111,7 +115,9 @@ def default_profile() -> UserProfile:
         skills                = _DEFAULT_SKILLS,
         salary_target_usd     = 50_000,
         remote_only           = True,
+        job_board             = "workable",
         search_keywords       = _DEFAULT_KEYWORDS,
+        date_posted_filter    = 0,
         strict_experience     = True,
         experience_gap        = 0.5,
         max_jobs_per_keyword  = 20,
@@ -161,13 +167,25 @@ target_usd = {p.salary_target_usd}
 
 
 [search]
-# Job titles to search for on Workable
+# Which job board to scrape.
+# Currently supported: workable
+# Add new boards by implementing boards/<name>.py and registering it in boards/__init__.py.
+job_board = "{p.job_board}"
+
+# Job titles to search for on the selected board
 keywords = [
 {keywords_block}
 ]
 max_jobs_per_keyword = {p.max_jobs_per_keyword}    # stop accepting once this many jobs pass per keyword
 max_scan_per_keyword = {p.max_scan_per_keyword}   # stop visiting pages once this many are reviewed
-min_score            = {p.min_score}              # jobs below this final score (0–10) are discarded
+min_score            = {p.min_score}              # jobs below this final score (0-10) are discarded
+
+# How recent should job postings be?
+#   0 = any time (default — no date restriction)
+#   1 = last 24 hours
+#   2 = last week
+#   3 = last month
+date_posted_filter = {p.date_posted_filter}
 
 
 [filters]

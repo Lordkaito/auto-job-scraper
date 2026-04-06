@@ -4,6 +4,8 @@ display.py
 Terminal display helpers shared across scraper and CLI output.
 """
 
+from pathlib import Path
+
 
 def link(text: str, url: str) -> str:
     """Wraps text in an OSC 8 hyperlink — clickable in most modern terminals."""
@@ -16,7 +18,6 @@ def file_link(text: str, path) -> str:
     Accepts a str or pathlib.Path. Uses Path.as_uri() for correct cross-platform
     file:// URLs (handles Windows drive letters, spaces, etc.).
     """
-    from pathlib import Path
     uri = Path(path).as_uri()
     return link(text, uri)
 

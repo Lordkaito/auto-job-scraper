@@ -5,6 +5,7 @@ Interactive Q&A flow for first-time setup when no CV or profile is provided.
 Asks only the questions needed to build a complete UserProfile.
 """
 
+from auto_job_scraper.boards import available_boards
 from auto_job_scraper.config import ALL_KNOWN_SKILLS
 from auto_job_scraper.profile import UserProfile
 
@@ -65,6 +66,13 @@ def run_wizard(prefilled: dict | None = None) -> UserProfile:
     ).strip().lower()
     remote_only = remote_raw != "n"
 
+    # ── Job board ─────────────────────────────────────────────────────────────
+    boards     = available_boards()
+    board_opts = "/".join(boards)
+    print()
+    board_raw = _ask_str(f"  Job board to scrape ({board_opts})", default="workable")
+    job_board = board_raw.strip().lower() if board_raw.strip().lower() in boards else "workable"
+
     # ── Search keywords ───────────────────────────────────────────────────────
     print("\n  Job title keywords to search for (comma-separated).")
     print("  e.g.  fullstack software developer, frontend developer")
@@ -92,7 +100,17 @@ def run_wizard(prefilled: dict | None = None) -> UserProfile:
     print()
     max_jobs  = int(_ask_float("  Max jobs to accept per keyword",       default=20))
     max_scan  = int(_ask_float("  Max job listings to scan per keyword", default=100))
-    min_score = _ask_float("  Minimum score to accept a job (0–10)",     default=5.0)
+    min_score = _ask_float("  Minimum score to accept a job (0-10)",     default=5.0)
+
+    # ── Date posted filter ────────────────────────────────────────────────────
+    print()
+    print("  How recent should job postings be?")
+    print("    0  Any time (default)")
+    print("    1  Last 24 hours")
+    print("    2  Last week")
+    print("    3  Last month")
+    raw_date_filter  = int(_ask_float("  Date posted filter (0/1/2/3)", default=0))
+    date_posted_filter = raw_date_filter if raw_date_filter in (0, 1, 2, 3) else 0
 
     return UserProfile(
         name                  = name,
@@ -100,12 +118,14 @@ def run_wizard(prefilled: dict | None = None) -> UserProfile:
         skills                = skills,
         salary_target_usd     = salary_usd,
         remote_only           = remote_only,
+        job_board             = job_board,
         search_keywords       = keywords,
-        strict_experience    = strict,
-        experience_gap       = gap,
-        max_jobs_per_keyword = max_jobs,
-        max_scan_per_keyword = max_scan,
-        min_score            = min_score,
+        strict_experience     = strict,
+        experience_gap        = gap,
+        max_jobs_per_keyword  = max_jobs,
+        max_scan_per_keyword  = max_scan,
+        min_score             = min_score,
+        date_posted_filter    = date_posted_filter,
     )
 
 

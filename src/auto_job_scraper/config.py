@@ -3,9 +3,10 @@ config.py
 ---------
 Algorithmic constants — not user-specific.
 Everything a user would customise lives in ~/.auto-job-scraper/profile.toml.
-"""
 
-BASE_URL: str = "https://jobs.workable.com"
+Note: BASE_URL has been removed from this file.
+Each board now owns its own base_url as a class attribute in boards/<name>.py.
+"""
 
 # ── Scoring weights (must sum to 1.0) ─────────────────────────────────────────
 
